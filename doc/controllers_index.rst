@@ -59,7 +59,7 @@ The controllers are using `common hardware interface definitions`_, and may use 
    Position Controllers <../position_controllers/doc/userdoc.rst>
    Velocity Controllers <../velocity_controllers/doc/userdoc.rst>
    Gpio Command Controller <../gpio_controllers/doc/userdoc.rst>
-
+   Motion Primitive Controller <../motion_primitives_controllers/userdoc.rst>
 
 Broadcasters
 **********************
@@ -76,6 +76,7 @@ In the sense of ros2_control, broadcasters are still controllers using the same 
    Range Sensor Broadcaster <../range_sensor_broadcaster/doc/userdoc.rst>
    Pose Broadcaster <../pose_broadcaster/doc/userdoc.rst>
    GPS Sensor Broadcaster <../gps_sensor_broadcaster/doc/userdoc.rst>
+   State Interfaces Broadcaster <../state_interfaces_broadcaster/doc/userdoc.rst>
 
 Filters
 **********************

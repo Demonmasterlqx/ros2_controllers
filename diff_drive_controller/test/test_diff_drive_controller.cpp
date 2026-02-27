@@ -101,6 +101,15 @@ protected:
       controller_name + "/cmd_vel", rclcpp::SystemDefaultsQoS());
   }
 
+  void TearDown() override
+  {
+    // Reset the controller before the fixture is destroyed to ensure the controller's
+    // shutdown transition (which clears loaned interfaces) runs while the underlying
+    // StateInterface/CommandInterface objects are still alive. LoanedStateInterface stores
+    // a const reference (not a shared_ptr), so destruction order matters.
+    controller_.reset();
+  }
+
   static void TearDownTestCase() { rclcpp::shutdown(); }
 
   /// Publish velocity msgs
@@ -206,8 +215,13 @@ protected:
 
     parameter_overrides.insert(parameter_overrides.end(), parameters.begin(), parameters.end());
     node_options.parameter_overrides(parameter_overrides);
-
-    return controller_->init(controller_name, urdf_, 0, ns, node_options);
+    controller_interface::ControllerInterfaceParams params;
+    params.controller_name = controller_name;
+    params.robot_description = urdf_;
+    params.update_rate = 0;
+    params.node_namespace = ns;
+    params.node_options = node_options;
+    return controller_->init(params);
   }
 
   std::string controller_name;
@@ -237,8 +251,13 @@ protected:
 
 TEST_F(TestDiffDriveController, init_fails_without_parameters)
 {
-  const auto ret =
-    controller_->init(controller_name, urdf_, 0, "", controller_->define_custom_node_options());
+  controller_interface::ControllerInterfaceParams params;
+  params.controller_name = controller_name;
+  params.robot_description = urdf_;
+  params.update_rate = 0;
+  params.node_namespace = "";
+  params.node_options = controller_->define_custom_node_options();
+  const auto ret = controller_->init(params);
   ASSERT_EQ(ret, controller_interface::return_type::ERROR);
 }
 
